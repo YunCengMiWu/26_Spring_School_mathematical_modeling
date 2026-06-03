@@ -1,0 +1,2 @@
+﻿noise_range_min,noise_range_max,n_trials,baseline_served,baseline_avg_dist_m,mean_served,std_served,mean_avg_dist_m,std_avg_dist_m,served_change_pct
+-10.0,10.0,20,196,8.94,190.45,3.34,9.179,0.266,-2.83
