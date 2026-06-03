@@ -1,0 +1,915 @@
+% ===========================================================================
+% 重庆大学2026数学建模春季赛 — 主论文（单文件版本）
+% 题目：共享停车位资源优化配置模型
+% 所有 section 内容已内联至此文件，可直接 xelatex 编译
+% ===========================================================================
+
+\documentclass[12pt,a4paper]{ctexart}
+
+% === Page geometry (2.5cm margins per competition rules) ===
+\usepackage[top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm]{geometry}
+
+% === Graphics & Figures ===
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+% === Mathematics ===
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+
+% === Tables ===
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+% === Formatting ===
+\usepackage{fancyhdr}
+\usepackage{setspace}
+
+% === Hyperlinks (must be loaded late) ===
+\usepackage[colorlinks=true, linkcolor=black, citecolor=black, urlcolor=blue]{hyperref}
+
+% === References: GB/T 7714 numerical style ===
+\usepackage{gbt7714}
+
+% === CJK Fonts (requires xelatex) ===
+\setCJKsansfont{Microsoft YaHei}
+\newcommand{\msyh}{\sffamily}
+
+% ===========================================================================
+% HEADING FORMAT (三号/四号黑体 per competition rules)
+% ===========================================================================
+\ctexset{
+   section = {
+    format = {\zihao{4}\heiti\centering},
+    beforeskip = {20pt plus 2pt minus 2pt},
+    afterskip = {10pt plus 2pt minus 2pt}
+   },
+   subsection = {
+    format = {\zihao{4}\heiti},
+    beforeskip = {15pt plus 2pt minus 2pt},
+    afterskip = {5pt plus 2pt minus 2pt}
+  },
+  subsubsection = {
+    format = {\zihao{-4}\heiti},
+    beforeskip = {10pt plus 1pt minus 1pt},
+    afterskip = {3pt plus 1pt minus 1pt}
+  }
+}
+
+% Page footer: page number at footer center (from body pages)
+\pagestyle{fancy}
+\fancyhf{}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% ===========================================================================
+% COVER FIELD COMMANDS (fill with actual team info)
+% ===========================================================================
+
+% --- Page title ---
+\newcommand{\covertitle}{数学建模校内竞赛论文}
+
+% --- Paper title ---
+\newcommand{\papertitle}{智慧城市共享停车位资源调配的优化建模与在线调度策略}
+
+% --- Group number ---
+\newcommand{\groupnumber}{【组号】}
+
+% --- Problem selection (A/B/C) ---
+\newcommand{\problemselection}{B}
+
+% --- Date ---
+\newcommand{\coverdate}{\today}
+
+% --- Member 1 ---
+\newcommand{\memberonename}{【队员1姓名】}
+\newcommand{\memberonecollege}{【学院】}
+\newcommand{\memberonegrade}{【年级】}
+\newcommand{\memberonemajor}{【专业】}
+\newcommand{\memberoneid}{【学号】}
+\newcommand{\memberonephone}{【联系电话】}
+\newcommand{\memberonemathanalysis}{}
+\newcommand{\memberoneadvancedalgebra}{}
+\newcommand{\memberonecalculus}{}
+\newcommand{\memberoneadvmath}{}
+\newcommand{\memberonelinearalg}{}
+\newcommand{\memberoneprobstat}{}
+\newcommand{\memberonemathexp}{}
+\newcommand{\memberonemathmodel}{}
+\newcommand{\memberonecetfour}{}
+\newcommand{\memberonecetsix}{}
+
+% --- Member 2 ---
+\newcommand{\membertwoname}{【队员2姓名】}
+\newcommand{\membertwocollege}{}
+\newcommand{\membertwograde}{}
+\newcommand{\membertwomajor}{}
+\newcommand{\membertwoid}{【学号】}
+\newcommand{\membertwophone}{}
+\newcommand{\membertwomathanalysis}{}
+\newcommand{\membertwoadvancedalgebra}{}
+\newcommand{\membertwocalculus}{}
+\newcommand{\membertwoadvmath}{}
+\newcommand{\membertwolinearalg}{}
+\newcommand{\membertwoprobstat}{}
+\newcommand{\membertwomathexp}{}
+\newcommand{\membertwomathmodel}{}
+\newcommand{\membertwocetfour}{}
+\newcommand{\membertwocetsix}{}
+
+% --- Member 3 ---
+\newcommand{\memberthreename}{【队员3姓名】}
+\newcommand{\memberthreecollege}{}
+\newcommand{\memberthreegrade}{}
+\newcommand{\memberthreemajor}{}
+\newcommand{\memberthreeid}{【学号】}
+\newcommand{\memberthreephone}{}
+\newcommand{\memberthreemathanalysis}{}
+\newcommand{\memberthreeadvancedalgebra}{}
+\newcommand{\memberthreecalculus}{}
+\newcommand{\memberthreeadvmath}{}
+\newcommand{\memberthreelinearalg}{}
+\newcommand{\memberthreeprobstat}{}
+\newcommand{\memberthreemathexp}{}
+\newcommand{\memberthreemathmodel}{}
+\newcommand{\memberthreecetfour}{}
+\newcommand{\memberthreecetsix}{}
+
+% ===========================================================================
+% BEGIN DOCUMENT
+% ===========================================================================
+\begin{document}
+
+% ====== COVER PAGE (no page number) ======
+\thispagestyle{empty}
+\pagenumbering{gobble}
+
+% ──────────────────────────────────────────────
+% COVER TEMPLATE CONTENT (inlined from cover_template.tex)
+% ──────────────────────────────────────────────
+
+\begin{center}
+  【校徽1】\hspace{0.3in}%
+  【校徽2】\hspace{0.3in}%
+  【校徽3】\hspace{0.3in}%
+  【校徽4】
+\end{center}
+
+\vspace{0.2in}
+\begin{center}
+  {\msyh\LARGE\bfseries \covertitle}
+\end{center}
+
+\begin{center}
+  【学校印章】
+\end{center}
+
+\vspace{0.3in}
+
+{\msyh\large\bfseries 论文题目：\papertitle}
+
+\vspace{0.25in}
+
+{\msyh\large 组号：\groupnumber}
+
+\vspace{0.2in}
+
+{\msyh\large 成员：\memberonename，\membertwoname，\memberthreename}
+
+\vspace{0.2in}
+
+{\msyh\large 选题：\problemselection}
+
+\vspace{0.3in}
+
+\newcolumntype{P}[1]{>{\msyh\tiny\centering\arraybackslash}p{#1}}
+\begin{table}[h]
+\centering
+\setlength{\tabcolsep}{1.5pt}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|P{0.38in}|P{0.40in}|P{0.32in}|P{0.44in}|P{0.46in}|P{0.46in}|P{0.34in}|P{0.34in}|P{0.34in}|P{0.34in}|P{0.34in}|P{0.34in}|P{0.34in}|P{0.34in}|P{0.28in}|P{0.28in}|}
+\hline
+姓名 & 学院 & 年级 & 专业 & 学号 & 联系电话 & 数学分析 & 高等代数 & 微积分 & 高等数学 & 线性代数 & 概率统计 & 数学实验 & 数学模型 & CET4 & CET6 \\
+\hline
+\memberonename & \memberonecollege & \memberonegrade & \memberonemajor & \memberoneid & \memberonephone & \memberonemathanalysis & \memberoneadvancedalgebra & \memberonecalculus & \memberoneadvmath & \memberonelinearalg & \memberoneprobstat & \memberonemathexp & \memberonemathmodel & \memberonecetfour & \memberonecetsix \\
+\hline
+\membertwoname & \membertwocollege & \membertwograde & \membertwomajor & \membertwoid & \membertwophone & \membertwomathanalysis & \membertwoadvancedalgebra & \membertwocalculus & \membertwoadvmath & \membertwolinearalg & \membertwoprobstat & \membertwomathexp & \membertwomathmodel & \membertwocetfour & \membertwocetsix \\
+\hline
+\memberthreename & \memberthreecollege & \memberthreegrade & \memberthreemajor & \memberthreeid & \memberthreephone & \memberthreemathanalysis & \memberthreeadvancedalgebra & \memberthreecalculus & \memberthreeadvmath & \memberthreelinearalg & \memberthreeprobstat & \memberthreemathexp & \memberthreemathmodel & \memberthreecetfour & \memberthreecetsix \\
+\hline
+\end{tabular}%
+}
+\end{table}
+
+\vspace{0.3in}
+
+\begin{center}
+  {\msyh \coverdate}
+\end{center}
+
+% ──────────────────────────────────────────────
+% END COVER TEMPLATE
+% ──────────────────────────────────────────────
+
+\newpage
+
+% ====== ABSTRACT PAGE (no page number, page 2) ======
+\thispagestyle{empty}
+
+% ──────────────────────────────────────────────
+% ABSTRACT CONTENT (inlined from sections/abstract.tex)
+% ──────────────────────────────────────────────
+
+\begin{center}
+  {\zihao{3}\heiti\textbf{摘\quad 要}}
+\end{center}
+
+\vspace{10pt}
+
+本文以智慧城市共享停车位资源调配为研究对象，基于某市300个共享车位与500位用户请求的真实数据，构建从静态分配到在线调度的层次化优化模型体系。在问题一中忽略时间因素，建立二分图最小费用最大匹配模型，采用两阶段整数线性规划求解，实现全部300位用户的可行分配，平均步行距离为2.82 m，车位利用率达到100\%。在问题二中引入时间完全覆盖约束以及车位内时间冲突互斥约束，建立混合整数线性规划模型，求得服务用户220位，平均步行距离为9.26 m，车位利用率为73.33\%。在问题三中设计Greedy-Nearest与Greedy-Balance两种在线贪心分配策略刻画实时调度过程，其中Greedy-Nearest服务用户200位，经验性能比（Empirical Performance Ratio, EPR）达到90.9\%。在问题四中从时间与空间两维刻画供需匹配特征，结果表明午间12:30供需压力比最高为3.85，13:00时存在11个空间网格无可达供给。结合敏感度分析结论，提出峰值定价与错时共享激励等运营优化建议。研究表明，共享停车系统的核心瓶颈来源于时间资源约束而非空间资源不足；通过合理的在线调度与错时共享机制，可显著提升停车资源利用效率。
+
+\vspace{15pt}
+
+\noindent{\heiti\textbf{关键词：}}共享停车；整数线性规划；混合整数线性规划；在线调度算法；贪心策略；供需分析
+
+% ──────────────────────────────────────────────
+% END ABSTRACT
+% ──────────────────────────────────────────────
+
+\newpage
+
+% ====== BODY (page numbering starts from 1, from page 3) ======
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+\pagestyle{fancy}
+
+% Body format: 小四号宋体, 20pt line spacing
+\zihao{-4}
+\setlength{\baselineskip}{20pt}
+
+% ──────────────────────────────────────────────
+% 问题重述 (inlined from sections/restate.tex)
+% ──────────────────────────────────────────────
+
+\section{问题重述}
+
+随着城市化进程加速与私家车保有量持续增长，城市停车难问题日益凸显。共享经济模式为缓解供需矛盾提供了可行路径：私家车位主在车位闲置时段将车位释放至平台，平台根据用户需求与车位可用性开展智能匹配与调度，从而提升停车资源利用效率。
+
+本文以某智慧城市共享停车平台为研究对象，基于给定数据集（300个车位、500位用户），围绕停车位资源优化配置问题构建从静态到在线、从分配到分析的完整研究框架，具体包括四个相互衔接的任务：
+
+\textbf{问题一：静态分配模型。}忽略时间维度，研究用户与车位的静态匹配：在满足步行距离约束（不超过其最大可接受步行距离）的前提下，使服务用户数最大化，并在服务数最优的条件下最小化总步行距离。与此同时，每个车位至多服务一位用户。
+
+\textbf{问题二：时间约束分配模型。}在问题一的基础上引入时间维度。车位具有特定的可用时段，用户具有到达与离开时间，要求用户的整个停车时段必须完整包含于车位的某一连续可用时段内。同一车位在不同时间可服务多个互不重叠的用户，因此需要建立显式刻画时间冲突的优化分配模型。
+
+\textbf{问题三：在线调度算法。}用户按到达时间顺序依次到达，平台在每位用户到达时需要立即作出``接受并分配''或``拒绝''的不可撤销决策。为刻画实时调度的决策质量，需设计高效在线算法，并从经验性能比的角度与问题二的离线最优解进行对比。
+
+\textbf{问题四：供需分析与运营建议。}从时间与空间两个维度刻画系统供需状况，识别供需紧张时段与关键区域；结合敏感度分析提出可落地的运营优化建议，为平台的长期运营提供决策依据。
+
+数据集空间范围为$[0,100]\times[0,100]$，时间范围为8:00—22:00。车位数据包含300个车位的坐标与可用时段信息（其中123个单时段车位、177个双时段车位），用户数据包含500位用户的目的地坐标、最大可接受步行距离（5--25~m，均值15.33~m）以及到达和离开时间（平均停车时长1.76小时）。
+
+\subsection{问题分析}
+
+\textbf{问题一的分析。}问题一忽略时间约束，本质是二分图上的字典序双目标优化问题。车位与用户属于两类异质资源——用户希望获得可接受步行距离内的车位，平台则希望尽可能服务更多用户，因此需要在有限车位资源与用户需求之间建立匹配关系。每个用户至多占用一个车位，每个车位也至多服务一个用户，具有典型的一对一匹配特征，因此可将问题抽象为二分图匹配模型。用户与车位构成二分图的两侧节点，距离不超过最大步行距离的用户-车位对构成可行边。首要目标为最大化匹配基数，次要目标为在此基础上最小化总步行距离。由于车位300个、用户500个，理论上界为300。
+
+\textbf{问题二的分析。}问题二在问题一基础上引入时间维度，要求用户的停车时段完整包含在车位的某一可用时段内，且同一车位在不同时间可服务多个互不重叠的用户。与问题一相比，时间维度的引入使问题性质发生根本变化：即使某车位在空间上满足步行距离要求，也可能由于开放时段与用户停车时段不重叠而完全失去可行性；同时，一个车位还可能对应多个时间兼容用户，导致资源竞争从单纯的空间竞争扩展为时空双重竞争。因此问题二不仅需要考虑空间匹配，还需要协调时间资源分配。该问题可建模为带时间窗的资源约束区间调度问题。
+
+\textbf{问题三的分析。}问题三属于在线二分图匹配问题。用户按到达时间顺序依次到达，平台需立即做出不可撤销的分配决策。在线场景下，平台无法获知未来用户需求和到达顺序，复杂的全局优化策略难以实时实施。考虑到用户步行距离是影响停车体验最直接的因素，且最近车位策略实现简单、计算开销低、可解释性强，因此本文以Greedy-Nearest为主要决策规则。
+
+\textbf{问题四的分析。}问题四需从时间和空间两个维度综合评估供需匹配特征。时间维度上，离散化时间轴统计各时刻的活跃需求与可用供给；空间维度上，将区域划分为网格并计算各网格的可达供给。结合敏感度分析，为平台运营提供数据支撑。
+
+% ──────────────────────────────────────────────
+% 模型假设与符号说明 (inlined from sections/assumptions.tex)
+% ──────────────────────────────────────────────
+
+\section{模型假设与符号说明}
+
+\subsection{基本假设}
+
+为聚焦核心优化目标并简化建模过程，本文作出如下合理假设：
+
+\begin{enumerate}
+\item \textbf{欧氏距离假设。}用户与车位间步行距离以欧氏距离近似。在街区尺度（$[0,100]\times[0,100]$）下，欧氏距离与真实路径长度具有较强相关性；本文重点在于优化框架构建，因此该简化不影响模型的普适性。
+  
+\item \textbf{步行速度恒定。}假设用户步行速度保持常数，步行体验仅受步行距离影响，不考虑地形、天气等外部因素。
+  
+\item \textbf{车位互斥使用。}每个车位在同一时刻至多服务一位用户，即车位在任意时间点均不可被多个用户同时占用。
+  
+\item \textbf{用户准时性。}用户严格按照其申报的到达时间与离开时间使用车位，不存在提前到达或延迟离开的情形。
+  
+\item \textbf{数据准确性。}车位与用户的坐标数据及时间数据均被视为准确可靠，不考虑定位偏差或记录误差。
+  
+\item \textbf{无取消与违约。}用户与车位主均不会取消预订或违约；一旦匹配结果确定即执行。
+  
+\item \textbf{时段完全覆盖。}用户停车时段$[a_j, d_j]$必须完整包含于车位某一连续可用时段$[s_i^{(k)}, e_i^{(k)}]$内，即满足$s_i^{(k)} \leq a_j$且$d_j \leq e_i^{(k)}$。
+  
+\item \textbf{离线完全信息。}在问题一与问题二中，平台在作出分配决策前获得全部用户请求的完整信息，从而可开展全局优化调度。
+\end{enumerate}
+
+\subsection{符号说明}
+
+全文所用核心数学符号及其含义见表\ref{tab:notation}。
+
+\begin{table}[H]
+  \centering
+  \caption{核心符号说明}
+  \label{tab:notation}
+  \begin{tabular}{c|l}
+    \toprule
+    符号 & 含义 \\
+    \midrule
+    $U = \{1,2,\ldots,500\}$ & 用户集合，$|U|=500$ \\
+    $S = \{1,2,\ldots,300\}$ & 车位集合，$|S|=300$ \\
+    $d_{ji}$ & 用户$j$到车位$i$的欧氏距离 \\
+    $w_j$ & 用户$j$的最大可接受步行距离 \\
+    $[a_j, d_j]$ & 用户$j$的停车时段 \\
+    $[s_i^{(k)}, e_i^{(k)}]$ & 车位$i$的第$k$个可用时段 \\
+    $E$ & 距离可行边集（$d_{ji} \leq w_j$） \\
+    $E^T$ & 时空可行边集（距离+时间兼容） \\
+    $x_{ji}$ & 二元决策变量，$x_{ji}=1$表示用户$j$分配至车位$i$ \\
+    $N^*$ & 最大可服务用户数（阶段1最优值） \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+% ──────────────────────────────────────────────
+% 问题一 (inlined from sections/q1_static.tex)
+% ──────────────────────────────────────────────
+
+\section{问题一：静态停车场空闲车位分配模型}
+
+\subsection{问题描述}
+
+问题一忽略时间维度，研究在静态场景下如何将500位用户分配给300个车位。车位与用户本质上属于两类异质资源——用户希望获得可接受步行距离内的车位，平台则希望尽可能服务更多用户，因此需要在有限车位资源与用户需求之间建立匹配关系。每个用户至多占用一个车位，每个车位也至多服务一个用户，具有典型的一对一匹配特征，故可将问题抽象为二分图匹配模型：用户与车位构成二分图的两侧节点，距离不超过最大步行距离$w_j$的用户-车位对构成可行边。优化目标为首先最大化服务用户数，然后在此基础上最小化总步行距离，属于字典序双目标优化。
+
+\subsection{数学模型}
+
+\subsubsection{可行边集构建}
+
+定义用户集合$U=\{1,2,\ldots,500\}$，车位集合$S=\{1,2,\ldots,300\}$。用户$j$到车位$i$的欧氏距离为$d_{ji}$，用户$j$的最大可接受步行距离为$w_j$。距离可行边集定义为：
+\begin{equation}
+  E = \{(j,i) \mid d_{ji} \leq w_j,\; j\in U,\; i\in S\}
+\end{equation}
+在给定数据中，满足距离约束的可行边共计$|E|=10{,}522$对。
+
+\subsubsection{决策变量}
+
+引入二元决策变量：
+\begin{equation}
+  x_{ji} \in \{0,1\},\quad \forall (j,i) \in E
+\end{equation}
+其中$x_{ji}=1$表示将用户$j$分配给车位$i$，$x_{ji}=0$表示不分配。
+
+\subsubsection{阶段一：最大基数匹配}
+
+第一阶段的目标是最大化被服务的用户总数，建立如下整数线性规划模型：
+\begin{equation}\label{eq:q1s1}
+  \begin{aligned}
+    \max \quad & \sum_{(j,i) \in E} x_{ji} \\
+    \text{s.t.} \quad & \sum_{i: (j,i) \in E} x_{ji} \leq 1, \quad \forall j \in U \\
+    & \sum_{j: (j,i) \in E} x_{ji} \leq 1, \quad \forall i \in S \\
+    & x_{ji} \in \{0, 1\}
+  \end{aligned}
+\end{equation}
+其中第一个约束保证每位用户至多获得一个车位，第二个约束保证每个车位至多服务一位用户。设模型\eqref{eq:q1s1}的最优值为$N^*$。
+
+\subsubsection{阶段二：最小费用匹配}
+
+在保证服务用户数达到最优值$N^*$的前提下，第二阶段最小化总步行距离：
+\begin{equation}\label{eq:q1s2}
+  \begin{aligned}
+    \min \quad & \sum_{(j,i) \in E} d_{ji} \cdot x_{ji} \\
+    \text{s.t.} \quad & \sum_{i: (j,i) \in E} x_{ji} \leq 1, \quad \forall j \in U \\
+    & \sum_{j: (j,i) \in E} x_{ji} \leq 1, \quad \forall i \in S \\
+    & \sum_{(j,i) \in E} x_{ji} = N^* \\
+    & x_{ji} \in \{0, 1\}
+  \end{aligned}
+\end{equation}
+新增约束$\sum x_{ji} = N^*$确保服务用户数不退化。此两阶段策略属于字典序多目标优化（Lexicographic Optimization）：先优化主目标（服务数量），再在最优主目标下优化次目标（步行距离）。
+
+\subsection{求解方法}
+
+本问题本质是二分图最小费用最大匹配问题，采用整数线性规划统一框架，通过开源求解器CBC求解。选择ILP的原因有两点：一是与问题二的MILP模型保持一致；二是二分图匹配的约束矩阵具有全幺模性，线性规划松弛的最优解自动为整数解，求解器可在多项式时间内收敛至全局最优。
+
+\subsection{求解结果与分析}
+
+模型求解结果如表\ref{tab:q1result}所示。
+
+\begin{table}[H]
+  \centering
+  \caption{问题一求解结果}
+  \label{tab:q1result}
+  \begin{tabular}{lc}
+    \toprule
+    指标 & 数值 \\
+    \midrule
+    服务用户数 & 300 \\
+    平均步行距离（m） & 2.82 \\
+    车位利用率 & 100\% \\
+    求解时间（s） & 6.0 \\
+    最优性 & 全局最优 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\textbf{结果解读：}(1) 在静态场景下，300个车位全部被利用，但仅有300位用户（占总数的60\%）被服务，这是因为其余200位用户的目的地周边不存在满足步行距离约束的空闲车位。(2) 平均步行距离仅2.82~m，说明两阶段优化在保证最大覆盖的同时有效压缩了步行成本——从10,522条可行边中精选出距离最短的300条。(3) CBC求解器在6秒内完成求解，验证了ILP框架在小规模二分图匹配问题上的计算可行性。
+
+两阶段优化策略的优越性体现在：若仅追求最大化服务用户数（阶段一），可能产生较长的步行距离；若仅追求最小化距离（忽略$N^*$约束），则可能牺牲部分用户的服务机会。字典序优化兼顾了两者，符合共享停车平台``服务优先、体验优化''的实际运营逻辑。
+
+% ──────────────────────────────────────────────
+% 问题二 (inlined from sections/q2_time.tex)
+% ──────────────────────────────────────────────
+
+\section{问题二：时间约束下的车位分配模型}
+
+\subsection{问题描述}
+
+问题二在问题一的基础上引入时间维度。每个车位$i$具有一组可用时段$T_i = \{[s_i^{(k)}, e_i^{(k)}]\}_{k=1}^{K_i}$，每位用户$j$具有到达时间$a_j$和离开时间$d_j$。核心约束包括：(1) 用户的整个停车时段必须完全包含在车位的某一连续可用时段内；(2) 同一车位在不同时间可服务多个互不重叠的用户。优化目标与问题一保持一致——先最大化服务用户数，再最小化总步行距离。
+
+与问题一相比，时间维度的引入使问题性质发生根本变化：即使某车位在空间上满足步行距离要求，也可能由于开放时段与用户停车时段不重叠而失去可行性；同时，一个车位可能对应多个时间兼容的用户，导致资源竞争从单纯的空间竞争扩展为时空双重竞争。因此问题二不仅需要考虑空间匹配，还需要协调时间资源分配。
+
+\subsection{时间兼容性分析}
+
+\subsubsection{时段完全覆盖条件}
+
+用户$j$与车位$i$时间兼容的充要条件是：存在车位$i$的某个可用时段完整包含用户的停车时段：
+\begin{equation}
+  T(j,i)=1 \;\Longleftrightarrow\; \exists k: \; s_i^{(k)} \leq a_j \;\wedge\; d_j \leq e_i^{(k)}
+\end{equation}
+在此基础上定义时空可行边集：
+\begin{equation}
+  E^T = \{(j,i) \in E \mid T(j,i)=1\}
+\end{equation}
+
+时间兼容性过滤极为严格：从距离可行边集$E$的$10{,}522$条边中，仅有$776$条边满足时间完全覆盖条件，过滤比例高达92.6\%。这意味着时间约束是比距离约束更关键的瓶颈因素。
+
+\subsubsection{车内时间冲突}
+
+同一车位上分配的多位用户之间可能发生时间冲突。对于车位$i$，定义其候选用户集$U_i = \{j \mid (j,i) \in E^T\}$，冲突对集合为：
+\begin{equation}
+  C_i = \{(j_1, j_2) \mid j_1, j_2 \in U_i,\; j_1 \neq j_2,\; [a_{j_1}, d_{j_1}] \cap [a_{j_2}, d_{j_2}] \neq \emptyset\}
+\end{equation}
+其中区间重叠的判定条件为：
+\begin{equation}
+  [a_1, d_1] \cap [a_2, d_2] \neq \emptyset \;\Longleftrightarrow\; a_1 < d_2 \;\wedge\; a_2 < d_1
+\end{equation}
+在当前数据中，共生成$1{,}135$对时间冲突约束。
+
+\subsection{混合整数线性规划模型}
+
+\subsubsection{阶段一：最大化服务用户数}
+
+\begin{equation}\label{eq:q2s1}
+  \begin{aligned}
+    \max \quad & \sum_{(j,i) \in E^T} x_{ji} \\
+    \text{s.t.} \quad & \sum_{i: (j,i) \in E^T} x_{ji} \leq 1, \quad \forall j \in U \\
+    & x_{j_1, i} + x_{j_2, i} \leq 1, \quad \forall i \in S,\; \forall (j_1, j_2) \in C_i \\
+    & x_{ji} \in \{0, 1\}
+  \end{aligned}
+\end{equation}
+其中第二个约束集合为\textbf{互斥约束}：若两位用户的时间段重叠，则至多一人可被分配到当前车位。设模型的最优值为$N^*_T$。
+
+\subsubsection{阶段二：最小化总步行距离}
+
+\begin{equation}\label{eq:q2s2}
+  \min \sum_{(j,i) \in E^T} d_{ji} \cdot x_{ji}
+\end{equation}
+约束条件同阶段一，并增加$\sum x_{ji} = N^*_T$以保证服务数量不退化。
+
+\subsection{求解结果与分析}
+
+\begin{table}[H]
+  \centering
+  \caption{问题二求解结果}
+  \label{tab:q2result}
+  \begin{tabular}{lc}
+    \toprule
+    指标 & 数值 \\
+    \midrule
+    服务用户数 & 220 \\
+    平均步行距离（m） & 9.26 \\
+    车位利用率 & 73.33\% \\
+    时间冲突约束数 & 1,135 \\
+    求解时间（s） & 4.0 \\
+    最优性 & 全局最优 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\textbf{结果分析：}(1) 与问题一相比，时间约束导致服务用户数从300下降至220（降幅26.7\%），时间兼容性是系统服务能力的核心瓶颈。(2) 平均步行距离从2.82~m升至9.26~m——由于时空可行边集仅有776条边（问题一的7.4\%），系统在选择匹配时的灵活性大幅降低，不得不接受更远的步行距离。(3) 车位利用率从100\%降至73.33\%，约80个车位因时段不匹配而闲置。(4) CBC求解器在4秒内完成求解，1,135个互斥约束未造成显著的计算负担。
+
+对比问题一的300位用户（无时间约束）和问题二的220位用户（有时间约束），可见时间维度的引入深刻改变了优化格局：即使在距离层面充足的车位，也可能因时段不匹配而无法被利用。这说明当前共享停车平台面临的主要问题并非空间资源不足，而是资源开放时间与用户需求时间的不匹配——大量车位在需求高峰期处于不可用状态，而在低峰期又无人预约。
+
+% ──────────────────────────────────────────────
+% 问题三 (inlined from sections/q3_online.tex)
+% ──────────────────────────────────────────────
+
+\section{问题三：在线实时调度算法}
+
+\subsection{问题描述}
+
+问题三研究在线场景下的车位调度问题。与问题二（离线全局优化）不同，在线场景中用户按到达时间顺序依次到达，平台必须在每位用户到达时立即做出``接受并分配''或``拒绝''的不可撤销决策。在线算法的核心挑战在于：决策时刻缺乏未来用户的信息，每个当前决策都可能阻塞后续更优的匹配机会。
+
+\subsection{算法设计：贪心最近分配策略（Greedy-Nearest）}
+
+本文设计的在线调度算法为\textbf{Greedy-Nearest}策略。在线场景下，平台无法获知未来用户需求和到达顺序，复杂的全局优化策略难以实时实施。考虑到用户步行距离是影响停车体验最直接的因素，且最近车位策略实现简单、计算开销低、可解释性强，因此本文以``在当前空闲车位中选择距离最近者分配''为决策规则。算法流程如下：
+
+\begin{enumerate}
+  \item 将所有用户按到达时间$a_j$升序排列。
+  \item 对每位用户$j$（依次处理），构建候选车位集合：
+  \begin{equation}
+    \mathcal{C}_j = \{i \in S \mid (j,i) \in E^T \;\wedge\; \text{车位}i\text{在}[a_j, d_j]\text{时段空闲}\}
+  \end{equation}
+  \item 若$\mathcal{C}_j \neq \emptyset$，选择距离最近的车位$i^* = \arg\min_{i \in \mathcal{C}_j} d_{ji}$，将用户$j$分配给车位$i^*$，更新车位$i^*$的占用列表，标记为``接受''。
+  \item 若$\mathcal{C}_j = \emptyset$，标记为``拒绝''。
+\end{enumerate}
+
+Greedy-Nearest策略的局部最优性体现在：对每位到达用户在当前可见状态下做出距离最优的即时决定。其信息优势在于利用了所有已到达用户的分配情况，但信息劣势在于无法预见未来用户的需求模式。
+
+\subsection{经验性能比定义}
+
+在线算法性能通过与问题二离线最优解比较来评估。记ALG为在线算法服务用户数，OPT为离线最优解，则经验性能比$\rho = \text{ALG}/\text{OPT}$。需注意该比值仅反映在本文数据上的表现，不代表所有输入下的最坏情况保证。
+
+\subsection{算法变体：Greedy-Balance策略}
+
+为进一步改善车位负载均衡，本文还设计了Greedy-Balance策略：在选择候选车位时，不仅考虑距离，还考虑车位的当前负载情况。负载度量采用各车位的历史累计服务次数，对高负载车位施加惩罚权重，引导用户向负载较轻的车位分流。
+
+\subsection{求解结果与分析}
+
+\begin{table}[H]
+  \centering
+  \caption{问题三在线算法求解结果}
+  \label{tab:q3result}
+  \begin{tabular}{lcc}
+    \toprule
+    指标 & Greedy-Nearest & Greedy-Balance \\
+    \midrule
+    服务用户数 & 200 & 197 \\
+    平均步行距离（m） & 9.47 & 9.75 \\
+    车位利用率 & 66.67\% & 65.67\% \\
+    求解时间（s） & 1.0 & 1.0 \\
+    经验性能比 & 90.9\% & 89.5\% \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\textbf{结果分析：}(1) Greedy-Nearest经验性能比达90.9\%，仅比离线最优的220位用户少服务20位。被拒绝的20位用户主要集中于供需紧张时段——午间12:00--14:00在线场景下，早期到达的用户一旦占据关键车位，后续即使有步行距离更近的需求到达，也可能因车位已被占用而无法分配。离线最优则可通过全局统筹，合理安排不同时段用户的车位占用顺序以最大化服务总量，在线算法因缺乏前瞻性而难以实现这种跨时段协调。(2) 平均步行距离9.47~m略高于问题二的9.26~m，原因同上——在线算法无法像离线优化那样全局协调。(3) Greedy-Balance以牺牲3位用户（降幅1.4\%）为代价换取更好的负载分布，验证了公平与效率的经典权衡。(4) 在线算法的求解时间仅1秒，远快于离线MILP的4秒。
+
+在线性能高的原因分析：当前数据集中，需求在时间上分布相对均匀，高峰期（12:30压力比3.85）虽然紧张但持续时间较短（约1小时），贪心策略在大部分时段有充足的候选车位。若需求在时间上高度集中（如瞬时压力比超过10），贪心策略的表现可能显著下降。
+
+% ──────────────────────────────────────────────
+% 问题四 (inlined from sections/q4_analysis.tex)
+% ──────────────────────────────────────────────
+
+\section{问题四：供需时空分析与运营建议}
+
+\subsection{宏观时段供需分析模型}
+
+为从宏观层面把握系统的供需状况，将8:00--22:00的时间窗口以0.5小时为步长离散化为28个时间点，统计每个时刻的供给与需求：
+
+\begin{equation}
+  S(t) = |\{i \in S \mid \exists [s,e] \in T_i,\; s \leq t < e\}|
+\end{equation}
+\begin{equation}
+  D(t) = |\{j \in U \mid a_j \leq t < d_j\}|
+\end{equation}
+
+定义\textbf{供需压力比}为$P(t) = D(t) / S(t)$。$P(t) > 1$表示需求超过供给，系统处于紧张状态；$P(t) < 1$表示供过于求。需注意，此压力比仅反映宏观数量对比，不考虑空间可达性（步行距离约束）和时段完全覆盖条件，因此是系统紧张程度的``上界估计''。
+
+\subsection{时序供需特征分析}
+
+各时段的压力比如图\ref{fig:supply-demand}所示，关键发现如下：
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\textwidth]{figures/q4_analysis.png}
+  \caption{各时段车位供给与用户需求对比}
+  \label{fig:supply-demand}
+\end{figure}
+
+\begin{table}[H]
+  \centering
+  \caption{关键时段供需压力比}
+  \label{tab:q4pressure}
+  \begin{tabular}{cccc}
+    \toprule
+    时段 & 需求$D(t)$ & 供给$S(t)$ & 压力比$P(t)$ \\
+    \midrule
+    8:00 & 8 & 25 & 0.32（供过于求） \\
+    12:30 & 77 & 20 & \textbf{3.85}（最紧张） \\
+    13:00 & 74 & 30 & 2.47 \\
+    16:00--18:00 & 50--65 & 35--55 & 1.5--2.0（较紧张） \\
+    19:00后 & $<$30 & $>$60 & $<$0.5（宽松） \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\textbf{核心发现：}
+\begin{enumerate}
+  \item \textbf{午间高峰}（12:00--14:00）：需求激增至70--77位用户同时活跃，而车位供给降至20--30个（许多车位仅开放早晚时段），形成全天最严重的供需缺口（压力比最高3.85）。
+  \item \textbf{傍晚次高峰}（16:00--18:00）：部分早班车位关闭、晚班车位尚未全部开放，供需再次趋于紧张（压力比1.5--2.0）。
+  \item \textbf{早晚宽松}：8:00前和19:00后需求分散，供给充裕，系统有大量闲置车位。
+  \item 全天平均压力比为1.23，说明大部分时段供需基本平衡，极端紧张集中在少数时段。
+\end{enumerate}
+
+\subsection{空间-时间热力图分析}
+
+为弥补宏观压力比忽略空间维度的不足，本文进一步将空间区域$[0,100]\times[0,100]$划分为$10\times10$网格，对每个网格$g$和时刻$t$计算网格级压力比：
+\begin{equation}
+  \rho(g,t) = \frac{D(g,t)}{S_{\text{reach}}(g,t)}
+\end{equation}
+其中$D(g,t)$是目的地在该网格内且时刻$t$活跃的用户数，$S_{\text{reach}}(g,t)$是从网格中心出发、在步行距离中位数（14.9~m）内可达且时刻$t$可用的车位数。
+
+七个关键时刻（8:00、10:00、12:00、14:00、16:00、18:00、20:00）的空间压力热力图如图\ref{fig:heatmap-grid}所示，供需总览图如图\ref{fig:heatmap-summary}所示。关键发现：
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\textwidth]{figures/heatmap_12h_3d.png}
+  \caption{不同时刻空间压力热力图示例（12:00 切片）。}
+  \label{fig:heatmap-grid}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\textwidth]{figures/heatmap_13h_3d.png}
+  \caption{供需总览图替代：13:00 时刻的 3D 压力表面渲染}
+  \label{fig:heatmap-summary}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\textwidth]{figures/q4_heatmap.png}
+  \caption{关键时刻空间-时间压力热力图（网格级压力比：需求/可达供给）}
+  \label{fig:q4-heatmap}
+\end{figure}
+
+\begin{enumerate}
+  \item \textbf{13:00为最严峻时刻}：11个网格（占全部网格的11\%）完全没有可达车位供给，2个网格压力比超过2。
+  \item \textbf{中心-边缘不均衡}：网格(55,55)附近累计需求最集中（17位用户），但供给也最充分；边缘区域虽然需求少但供给更为稀缺。
+  \item \textbf{夜间供给萎缩}：20:00后12个网格无供给，虽然需求也已大幅下降，但突发需求将面临无处可停的困境。
+\end{enumerate}
+
+\subsection{运营策略建议}
+
+基于上述分析，提出以下运营优化建议：
+
+\textbf{1. 峰值差异化定价。}在12:00--14:00供需最紧张时段适度提高停车费率，利用价格杠杆将部分弹性需求引导至非高峰时段，有效平滑需求曲线。
+
+\textbf{2. 错时共享激励。}当前177个双时段车位已贡献了大部分供给容量，但123个单时段车位存在巨大的补充空间。敏感度分析表明，若单时段车位主开放互补时段，可增加39\%的时空可行边，服务能力从220提升至306位用户。平台可通过补贴、积分奖励等机制激励车位主延长共享时段\cite{xiao2020parking}。
+
+\textbf{3. 空间供给优化。}在用户高密度区域（如网格中心区域）增设合作车位，在供给稀缺的边缘区域推出``精准导航''功能，引导用户前往最近的可停车位。
+
+\textbf{4. 智能预约与推荐。}基于历史数据训练需求预测模型，在高峰期到来前主动向用户推荐替代车位或错峰时段，降低用户在高峰时段的即时决策压力。
+
+\textbf{5. 夜间共享推广。}20:00后供给萎缩但仍有零星需求，可推广``夜间共享''模式，鼓励更多车位主开放晚间车位，满足弹性需求。
+
+% ──────────────────────────────────────────────
+% 敏感度分析 (inlined from sections/sensitivity.tex)
+% ──────────────────────────────────────────────
+
+\section{敏感度分析}
+
+为评估模型对关键参数的鲁棒性并探索优化空间，本节从步行距离阈值、用户停车时长和车位时段扩展三个维度进行敏感度分析。
+
+\subsection{步行距离阈值敏感度}
+
+将用户最大步行距离$w_j$按基准值（平均15.33~m）进行缩放，缩放因子取$\{0.5, 0.75, 1.0, 1.25, 1.5, 2.0\}$，分别求解问题一和问题二，结果如表\ref{tab:sens-walk}所示。
+
+\begin{table}[H]
+  \centering
+  \caption{步行距离阈值敏感度分析}
+  \label{tab:sens-walk}
+  \begin{tabular}{cccccc}
+    \toprule
+    阈值倍数 & 平均阈值（m） & 时间兼容边数 & Q1分配 & Q2分配 & Q2平均距离（m） \\
+    \midrule
+    0.5$\times$ & 7.66 & 348 & 300 & 123 & 5.40 \\
+    0.75$\times$ & 11.50 & 602 & 300 & 173 & 6.98 \\
+    1.0$\times$（基准） & 15.33 & 776 & 300 & 220 & 9.26 \\
+    1.25$\times$ & 19.16 & 971 & 300 & 241 & 10.17 \\
+    1.5$\times$ & 22.99 & 1,171 & 300 & 266 & 11.60 \\
+    2.0$\times$ & 30.65 & 1,592 & 300 & 300 & 14.29 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\textwidth]{figures/sensitivity_analysis.png}
+  \caption{敏感度分析结果图（步行距离阈值、停车时长、车位时段扩展）}
+  \label{fig:sensitivity}
+\end{figure}
+
+图\ref{fig:sensitivity}直观展示了Q1与Q2在不同阈值下的服务用户数变化。
+
+\textbf{分析结论：}
+\begin{enumerate}
+  \item \textbf{Q1高度鲁棒。}步行距离阈值在所有测试倍数下，Q1始终保持300位用户的满额分配。这是因为在$[0,100]\times[0,100]$空间内，300个车位分布足够密集，即使将步行距离压缩至7.66~m（0.5倍），仍有至少300位用户能在步行距离内找到车位。
+  \item \textbf{Q2高度敏感。}步行距离阈值从0.5倍放宽至2.0倍，Q2服务用户数从123急剧增长至300，增幅达144\%。更大的步行阈值直接增加时间兼容边的基数（从348增至1,592），为匹配提供更多可行选择。
+  \item \textbf{边际收益递减。}阈值从0.5倍$\to$1.0倍的增量（+97位用户）远大于从1.0倍$\to$2.0倍的增量（+80位用户），说明在达到一定阈值后，时间约束而非距离约束成为主要瓶颈。
+\end{enumerate}
+
+\subsection{用户停车时长敏感度}
+
+将用户停车时长按基准值（平均1.76小时）进行缩放，缩放因子取$\{0.5, 0.75, 1.0, 1.25, 1.5\}$，求解问题二，结果如表\ref{tab:sens-duration}所示。
+
+\begin{table}[H]
+  \centering
+  \caption{用户停车时长敏感度分析}
+  \label{tab:sens-duration}
+  \begin{tabular}{cccc}
+    \toprule
+    时长倍数 & 平均时长（h） & Q2分配 & 时间兼容边数 \\
+    \midrule
+    0.5$\times$ & 0.88 & 346 & 1,545 \\
+    0.75$\times$ & 1.32 & 283 & 1,085 \\
+    1.0$\times$（基准） & 1.76 & 220 & 776 \\
+    1.25$\times$ & 2.20 & 161 & 506 \\
+    1.5$\times$ & 2.64 & 126 & 353 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\textbf{分析结论：}
+\begin{enumerate}
+  \item \textbf{停车时长对服务能力影响巨大。}时长缩短50\%（1.76h$\to$0.88h）可使Q2服务用户数从220跃升至346（+57\%），系统供给压力得到显著释放。相反，时长延长50\%，服务数下降至126（-43\%）。
+  \item \textbf{时长敏感性高于步行距离。}对比两表，时段放宽2倍仅提升80位用户，而时长缩短50\%即可提升126位。这表明在当前数据集中，时间资源的紧凑程度远大于空间资源，是系统效率的首要制约因素。
+  \item \textbf{时间兼容边数呈指数级衰减。}当时长从0.88h增至2.64h（3倍），时间兼容边数从1,545骤降至353（降幅77\%），解释了服务数大幅下降的根本原因。
+\end{enumerate}
+
+\subsection{车位时段扩展场景分析}
+
+为量化错时共享的潜在收益，模拟以下三种场景：(1) 原始时段（基准）；(2) 单时段车位补充反向时段（将123个单时段车位的开放时间扩展至互补时段）；(3) 理论上限（所有车位全天8:00--22:00开放）。
+
+\begin{table}[H]
+  \centering
+  \caption{车位时段扩展场景分析}
+  \label{tab:sens-expand}
+  \begin{tabular}{lccc}
+    \toprule
+    场景 & Q2分配 & 平均距离（m） & 利用率 \\
+    \midrule
+    原始时段 & 220 & 9.26 & 73.3\% \\
+    单时段补充反向（+39\%边） & 306 & 8.14 & 102\% \\
+    全天开放（理论上限） & 498 & 3.20 & 166\% \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\textbf{结论：}单时段车位补充反向时段即可将服务能力从220提升至306（+39\%），投入产出比极高。理论上限（全天开放）的可服务498位用户表明，300个车位的空间容量足以覆盖几乎所有用户需求，瓶颈完全在时间维度上。这为平台推行错时共享、弹性时段策略提供了强有力的数据支撑。
+
+\subsection{敏感度分析总论}
+
+综合三个维度的分析，系统的核心瓶颈排序为：\textbf{时间资源} $>$ \textbf{空间资源} $>$ \textbf{算法策略}。停车时长和车位可用时段是制约服务能力的首要因素；步行距离在达到一定阈值后影响趋于平缓；在线算法与离线最优的差距（约9.1\%）远小于时间约束本身造成的效率损失（约26.7\%）。因此，平台的运营优化应优先聚焦于时间资源的释放（如错时共享、弹性时段），其次才是空间覆盖的改善和算法精度的提升\cite{jian2019smart}。
+
+% ──────────────────────────────────────────────
+% 模型评价与改进 (inlined from sections/evaluation.tex)
+% ──────────────────────────────────────────────
+
+\section{模型评价与改进}
+
+\subsection{模型优点}
+
+\textbf{1. 字典序优化兼顾多维目标。}问题一与问题二均采用``先最大化服务数量、再最小化步行距离''的两阶段字典序优化。该策略可有效避免单目标优化带来的权衡偏置：例如，仅追求最大化服务数可能导致步行距离增大；而仅追求步行距离最小又可能降低服务覆盖面。
+
+\textbf{2. 四个问题形成递进结构。}问题一至问题四分别对应静态匹配、时空匹配、在线决策和运营分析。各问题之间的对比——例如Q1与Q2的结果差异直接揭示时间约束为系统核心瓶颈——为模型层间关系的理解提供了明确证据。
+
+\textbf{3. MILP统一建模框架便于维护与扩展。}问题一与问题二共用PuLP+CBC求解框架，仅需替换边集与约束即可从静态模型迁移至时间约束模型。统一的建模语言降低了实现与维护成本。
+
+\textbf{4. 在线策略决策逻辑直观。}Greedy-Nearest以``为用户选择最近可用车位''为核心规则，不仅实现简单、计算开销低，也便于向用户与平台运营方解释决策依据，降低算法不透明带来的信任风险。
+
+\textbf{5. 敏感度分析给出可量化的决策依据。}从步行距离、停车时长与车位时段扩展三个维度进行系统扰动，各因素的边际影响均可通过服务用户数与步行距离的变化直接度量，为运营策略的优先级排序提供数值参考。
+
+\subsection{模型不足}
+
+\textbf{1. 步行距离刻画存在简化。}使用欧氏距离替代实际路网距离，在街区尺度下具有合理近似，但未显式考虑建筑物阻挡、单行道等路径约束，可能低估部分用户的真实步行距离。
+
+\textbf{2. 在线算法缺少理论竞争比保证。}当前给出的是经验性能比（90.9\%），尚未从理论层面证明最坏情况下的竞争比上界。若输入数据分布显著改变（例如需求在时间上高度集中），贪心策略的性能可能出现明显波动。
+
+\textbf{3. 时间冲突约束的规模增长问题。}Pairwise互斥约束数量为$O(n^2)$。在当前数据规模下1,135个约束可接受，但若用户规模扩展至万级，约束数量可能膨胀至百万级，从而影响求解效率。
+
+\textbf{4. Greedy-Balance负载度量的局限性。}Balance策略采用历史累计服务次数作为负载度量，未直接反映当前占用状态。该做法可能对``过去服务较多但当前空闲''的车位施加不必要惩罚，进而引起调度偏差。
+
+\textbf{5. 用户偏好多维度尚未建模。}模型主要考虑距离与时间两个维度，未纳入车位大小、安全性、价格敏感度以及车位主信誉等可能影响用户选择的因素。
+
+\subsection{改进方向}
+
+\textbf{1. Min-Regret在线策略。}当前Greedy-Nearest仅评估当前用户到候选车位的直接成本，未显式刻画分配决策对后续用户的``阻塞效应''。Min-Regret策略通过估计候选车位的机会成本（若占用该车位，未来可能有多少用户被阻塞）来最小化``后悔值''，有望提升经验性能比（从90.9\%提升至95\%以上）。
+
+\textbf{2. 路网距离替换。}引入OpenStreetMap等开源地图数据，将欧氏距离替换为路网最短路径距离，使模型更贴近真实步行过程，从而提升匹配结果的可用性。
+
+\textbf{3. 团约束替代Pairwise约束。}在问题二中，可用``每个车位在每个时刻的容量$\leq 1$''的团约束替代两两互斥的Pairwise形式。理论上该替代可将约束数量从$O(n^2)$降低至$O(n)$。
+
+\textbf{4. 多目标Pareto前沿分析。}将价格、用户满意度与平台收益等目标纳入模型，构建Pareto前沿，为平台在不同运营阶段（增长期追求用户量 vs.\ 成熟期追求利润率）提供差异化策略选择。
+
+\textbf{5. 预测驱动的预调度。}基于历史数据训练需求预测模型，在高峰期到来前主动为高概率用户预留车位，将部分在线决策转化为准离线优化，从而提升整体匹配效率。
+
+\subsection{建模方法术语对照}
+
+为便于学术交流与后续研究，将本文各问题的建模方法总结如下：
+
+\begin{table}[H]
+  \centering
+  \caption{核心建模方法术语对照}
+  \label{tab:methods}
+  \begin{tabular}{c|l|l}
+    \toprule
+    问题 & 规范名称 & 英文术语 \\
+    \midrule
+    Q1 & 二分图最小费用最大匹配 & Min-Cost Max Bipartite Matching \\
+    Q2 & 带时间窗的资源约束区间调度MILP & Resource-Constrained Interval Scheduling \\
+    Q3 & 在线贪心分配 & Online Greedy Bipartite Matching \\
+    Q4 & 时空供需压力分析 & Spatiotemporal Supply-Demand Analysis \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+% ──────────────────────────────────────────────
+% AI工具使用声明 (inlined from sections/ai_declaration.tex)
+% ──────────────────────────────────────────────
+
+\section{人工智能工具使用声明}
+
+根据《全国大学生数学建模竞赛人工智能工具使用规定》，本文在撰写过程中使用了 DeepSeek 大语言模型作为辅助工具。为满足公开透明原则，本文在正文相应位置对 AI 辅助生成/润色内容作出标注，并在本节给出 AI 工具使用详情与责任声明。
+
+\textbf{说明：}下表仅列出 AI 工具使用概况。凡与 AI 辅助生成/润色直接相关的关键表述，均已在正文对应位置以``(AI 辅助)''标注。
+
+\subsection{使用工具及用途}
+
+\begin{table}[H]
+  \centering
+  \caption{人工智能工具使用详情}
+  \label{tab:ai}
+  \begin{tabular}{p{3cm}|p{3cm}|p{5cm}}
+    \toprule
+    工具名称 & 使用环节 & 具体用途 \\
+    \midrule
+    DeepSeek & 模型建立与求解 & 辅助数学建模思路讨论、优化模型公式推导、代码框架生成与调试 \\
+    \hline
+    DeepSeek & 论文撰写 & 辅助论文大纲设计、章节内容初稿生成、学术语言润色与规范表述 \\
+    \hline
+    DeepSeek & 文献检索 & 辅助参考文献检索策略制定、文献摘要提取与分类整理 \\
+    \hline
+    DeepSeek & 数据分析 & 辅助Python代码编写、CBC求解器调用、数据可视化图表生成 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{使用方式说明}
+
+在建模过程中，人工智能工具主要用于以下方面：(1) 优化模型的理论分析与公式推导——在建立二分图匹配模型和混合整数线性规划模型时，利用AI工具验证约束条件的正确性和模型结构的一致性；(2) 算法实现与调试——在编写PuLP调用CBC求解器、实现在线贪心调度算法时，AI辅助生成代码框架并协助定位bug；(3) 论文撰写与润色——AI工具辅助生成各章节初稿，本文作者对所有AI生成内容进行了逐段审核、修改和补充，确保内容的科学性、准确性和原创性。
+
+\subsection{正文中 AI 辅助内容标注说明}
+本文在正文对应位置采用统一标注方式：凡涉及模型推导表述、算法/代码框架生成、或论文初稿润色的内容，均在该段落末尾以``（AI 辅助）''标注；作者在最终提交前逐段复核并做了必要的人工修改。
+
+\subsection{责任声明}
+
+本文所有数学模型的建立思路、求解方法选择、结果分析与解释、以及最终结论均由作者团队独立思考和判断完成。人工智能工具仅作为辅助手段，不替代作者的创造性智力劳动。作者对本文的全部内容承担学术责任。
+
+\subsection{参考文献中的 AI 工具条目}
+本文使用的 AI 工具条目将随参考文献自动列出（DeepSeek-R1-0528，使用日期/版本信息以最终打包材料为准）。
+
+（注：若系统暂无法在参考文献中生成该条目，可在 refs.bib 中补全后重新编译。）
+
+% ====== REFERENCES ======
+\newpage
+\bibliographystyle{gbt7714-numerical}
+\bibliography{refs}
+
+% ====== APPENDIX ======
+\newpage
+\appendix
+
+% ──────────────────────────────────────────────
+% 支撑材料文件列表 (inlined from appendix/support_materials_list.tex)
+% ──────────────────────────────────────────────
+
+\section{支撑材料文件列表}
+
+说明：支撑材料需与论文正文/结果完全一致。若无支撑材料文件，请在此处注明："本论文没有支撑材料"。
+
+\subsection{必备文件}
+\begin{enumerate}
+  \item \texttt{AI工具使用详情.pdf}（文件名必须为"AI工具使用详情"）
+  \item \texttt{源代码及可运行程序}
+  \item \texttt{数据资料（非赛题原始数据）}
+  \item \texttt{较大篇幅中间结果图表}
+\end{enumerate}
+
+\subsection{代码与数据清单（请替换为你的真实文件名）}
+\begin{itemize}
+  \item 数据：users.csv / spots.csv / slots.csv / \texttt{sensitivity_*.csv}（或你实际使用的数据文件）
+  \item 代码：code/q1_static 等目录下的可运行脚本与依赖说明
+  \item 求解器/运行环境说明：PuLP + CBC（或你实际使用的求解器）
+  \item 生成的关键图表：figures/*.png（或你实际生成的图表文件）
+\end{itemize}
+
+\end{document}
